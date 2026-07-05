@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     int port = std::stoi(argv[1]);
-    if (Manette::init(port)) return EXIT_FAILURE;
+    if (!Manette::init(port)) return EXIT_FAILURE;
 
     while (running) {
         EtatManette etat = Manette::read();
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
         }
 
         if (etat.xL >= 24000 && etat.xL <= 40000) {
-            Servo::center()
+            Servo::center();
         }
         if (etat.xL > 40000) {
             if (etat.xL >= 64000) {

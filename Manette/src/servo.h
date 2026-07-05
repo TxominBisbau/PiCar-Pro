@@ -13,9 +13,6 @@ const float SERVO_FREQ        = 50.0f;    // Hz
 
 const float ANGLE_DEFAULT     = 90.0f;  // tout droit
 
-const float ANGLE_LEFT_MAX    = 150.0f;    // à calibrer
-const float ANGLE_RIGHT_MAX   = 30.0f;   // à calibrer
-
 
 namespace Servo {
     bool init();
