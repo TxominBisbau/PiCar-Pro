@@ -1,8 +1,6 @@
 #pragma once
 
-// -------------------------------------------------------
 // PCA9685 — Servo de direction
-// -------------------------------------------------------
 const int   SERVO_I2C_BUS     = 1;      // /dev/i2c-1
 const int   SERVO_I2C_ADDR    = 0x40;
 const int   SERVO_CHANNEL     = 0;      // à vérifier sur le HAT

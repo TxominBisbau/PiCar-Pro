@@ -1,3 +1,6 @@
+// Compilation : g++ main.cpp src/motors.cpp src/servo.cpp src/manette.cpp -o picarpro -std=c++17 -llgpio
+//               sudo ./picarpro 5005
+
 #include <iostream>
 #include <csignal>
 #include <atomic>
@@ -52,15 +55,15 @@ int main(int argc, char** argv) {
         }
         if (etat.xL > 40000) {
             if (etat.xL >= 64000) {
-                angle = 60;
+                angle = 30;
             }
             else {
-                angle = 90 - (etat.xL-40000)*3/2400;
+                angle = 90 - (etat.xL-40000)*6/2400;
             }
             Servo::setAngle(angle);
         }
         if (etat.xL < 24000) {
-            angle = 120 - etat.xL*3/2400;
+            angle = 120 - etat.xL*6/2400;
             Servo::setAngle(angle);
         }
 
