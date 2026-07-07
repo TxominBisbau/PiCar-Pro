@@ -52,7 +52,6 @@ bool PCA9685::init(int i2cBus, int i2cAddr, float freqHz) {
         std::cerr << "[SERVO] Erreur adresse I2C 0x" << std::hex << i2cAddr << "\n";
         return false;
     }
-    if (g_fd >= 0) close(g_fd);
 
     // Calcul du prescaler pour 50 Hz
     uint8_t prescale = (uint8_t)(std::round(25000000.0f / (4096.0f * freqHz)) - 1);
@@ -66,4 +65,8 @@ bool PCA9685::init(int i2cBus, int i2cAddr, float freqHz) {
     writeReg(REG_MODE1, oldmode | 0x80);            // RESTART
 
     return 1;
+}
+
+void PCA9685::cleanup() {
+    if (g_fd >= 0) close(g_fd);
 }
