@@ -24,11 +24,11 @@ static uint8_t readReg(uint8_t reg) {
     write(g_fd, &reg, 1);
     uint8_t val = 0;
     read(g_fd, &val, 1);
-    return val:
+    return val;
 }
 
 // Envoi des ticks sur un canal PCA9685
-static void setChannel(int channel, int ticks) {
+void PCA9685::setChannel(int channel, int ticks) {
     uint8_t base = REG_LED0_BASE + 4 * channel;
     // ON toujours à 0, OFF = ticks (début de pulse à t=0)
     uint8_t buf[5] = {
@@ -40,7 +40,7 @@ static void setChannel(int channel, int ticks) {
     write(g_fd, buf, 5);
 }
 
-bool PCA9685::init() {
+bool PCA9685::init(int i2cBus, int i2cAddr, float freqHz) {
     char path[16];
     snprintf(path, sizeof(path), "/dev/i2c-%d", i2cBus);
     g_fd = open(path, O_RDWR);
@@ -52,6 +52,7 @@ bool PCA9685::init() {
         std::cerr << "[SERVO] Erreur adresse I2C 0x" << std::hex << i2cAddr << "\n";
         return false;
     }
+    if (g_fd >= 0) close(g_fd);
 
     // Calcul du prescaler pour 50 Hz
     uint8_t prescale = (uint8_t)(std::round(25000000.0f / (4096.0f * freqHz)) - 1);
@@ -63,4 +64,6 @@ bool PCA9685::init() {
     writeReg(REG_MODE1, oldmode);                   // réveil
     usleep(5000);                                   // attente oscillateur
     writeReg(REG_MODE1, oldmode | 0x80);            // RESTART
+
+    return 1;
 }
