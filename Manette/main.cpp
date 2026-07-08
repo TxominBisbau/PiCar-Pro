@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     while (running) {
         EtatManette etat = Manette::read();
         int spd = Motors::getSpeed();
-        int angle = Servo::getAngle();
+        int angle_direction = servoDirection.getAngle();
 
         // Moteurs
         if (etat.btn & BTN_START || (etat.yL >= 24000 && etat.yL <= 40000)) {
@@ -60,16 +60,16 @@ int main(int argc, char** argv) {
         }
         if (etat.xL > 40000) {
             if (etat.xL >= 64000) {
-                angle = 30;
+                angle_direction = 30;
             }
             else {
-                angle = 90 - (etat.xL-40000)*6/2400;
+                anangle_directiongle = 90 - (etat.xL-40000)*6/2400;
             }
-            servoDirection.setAngle(angle);
+            servoDirection.setAngle(angle_direction);
         }
         if (etat.xL < 24000) {
-            angle = 120 - etat.xL*6/2400;
-            servoDirection.setAngle(angle);
+            angle_direction = 120 - etat.xL*6/2400;
+            servoDirection.setAngle(angle_direction);
         }
 
         if (etat.btn & BTN_SELECT) running = false;
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     Servo::center();
     Manette::cleanup();
     Motors::cleanup();
-    PCA9685::cleanup()
+    PCA9685::cleanup();
 
     std::cout << "\n[INFO] Arrêt propre.\n";
     return EXIT_SUCCESS;
