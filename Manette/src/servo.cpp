@@ -1,8 +1,5 @@
 #include "servo.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/i2c-dev.h>
+#include "pca9685.H"
 #include <cmath>
 #include <cstdint>
 #include <iostream>
@@ -12,9 +9,8 @@ static int g_fd = -1;
 static int g_angle = ANGLE_DEFAULT;
 
 // Conversion angle → ticks PCA9685
-static int angleToTicks(float angle) {
-    float pulse_us = SERVO_MIN_PULSE
-                   + (SERVO_MAX_PULSE - SERVO_MIN_PULSE) * angle / 180.0f;
+int Servo::angleToTicks(float angle) {
+    float pulse_us = minPulse + (maxPulse - minPulse) * angle / 180.0f;
     // période = 1/50Hz = 20 000 µs = 4096 ticks
     return (int)(pulse_us * 4096.0f / 20000.0f);
 }

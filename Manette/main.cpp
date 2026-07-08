@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
     std::signal(SIGTERM, signalHandler);
 
     if (!Motors::init()) return EXIT_FAILURE;
+    if (!PCA9685::init()) return EXIT_FAILURE;
     if (!Servo::init())  return EXIT_FAILURE;
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " <PORT>\n";
