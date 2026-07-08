@@ -6,6 +6,7 @@
 #include <atomic>
 #include "src/motors.h"
 #include "src/manette.h"
+#include "src/pca9685.h"
 #include "src/servo.h"
 
 std::atomic<bool> running(true);
@@ -20,8 +21,8 @@ int main(int argc, char** argv) {
     std::signal(SIGTERM, signalHandler);
 
     if (!Motors::init()) return EXIT_FAILURE;
-    if (!PCA9685::init()) return EXIT_FAILURE;
-    if (!Servo::init())  return EXIT_FAILURE;
+    if (!PCA9685::init(SERVO_I2C_BUS, SERVO_I2C_ADDR, SERVO_FREQ)) return EXIT_FAILURE;
+
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " <PORT>\n";
         return EXIT_FAILURE;
@@ -34,6 +35,7 @@ int main(int argc, char** argv) {
         int spd = Motors::getSpeed();
         int angle = Servo::getAngle();
 
+        // Moteurs
         if (etat.btn & BTN_START || (etat.yL >= 24000 && etat.yL <= 40000)) {
             Motors::stop();
         }
@@ -51,8 +53,10 @@ int main(int argc, char** argv) {
             Motors::forward(spd);
         }
 
+        // Servo de direction
+        Servo servoDirection(SERVO_CHANNEL_DIRECTION, 500.0f, 2400.0f, 90.0f);
         if (etat.xL >= 24000 && etat.xL <= 40000) {
-            Servo::center();
+            servoDirection.center();
         }
         if (etat.xL > 40000) {
             if (etat.xL >= 64000) {
@@ -61,11 +65,11 @@ int main(int argc, char** argv) {
             else {
                 angle = 90 - (etat.xL-40000)*6/2400;
             }
-            Servo::setAngle(angle);
+            servoDirection.setAngle(angle);
         }
         if (etat.xL < 24000) {
             angle = 120 - etat.xL*6/2400;
-            Servo::setAngle(angle);
+            servoDirection.setAngle(angle);
         }
 
         if (etat.btn & BTN_SELECT) running = false;
@@ -75,7 +79,7 @@ int main(int argc, char** argv) {
     Servo::center();
     Manette::cleanup();
     Motors::cleanup();
-    Servo::cleanup();
+    PCA9685::cleanup()
 
     std::cout << "\n[INFO] Arrêt propre.\n";
     return EXIT_SUCCESS;
