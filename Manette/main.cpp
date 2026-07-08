@@ -28,6 +28,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     int port = std::stoi(argv[1]);
+    Servo servoDirection(CHANNEL_DIRECTION, 500.0f, 2400.0f, 90.0f);
     if (!Manette::init(port)) return EXIT_FAILURE;
 
     while (running) {
@@ -54,7 +55,6 @@ int main(int argc, char** argv) {
         }
 
         // Servo de direction
-        Servo servoDirection(CHANNEL_DIRECTION, 500.0f, 2400.0f, 90.0f);
         if (etat.xL >= 24000 && etat.xL <= 40000) {
             servoDirection.center();
         }
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
                 angle_direction = 30;
             }
             else {
-                anangle_directiongle = 90 - (etat.xL-40000)*6/2400;
+                angle_direction = 90 - (etat.xL-40000)*6/2400;
             }
             servoDirection.setAngle(angle_direction);
         }
@@ -76,7 +76,6 @@ int main(int argc, char** argv) {
     }
 
     Motors::stop();
-    Servo::center();
     Manette::cleanup();
     Motors::cleanup();
     PCA9685::cleanup();
