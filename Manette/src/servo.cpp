@@ -13,26 +13,23 @@ int Servo::angleToTicks(float angle) const{
 }
 
 // Servo de direction
-class Servo::Servo(int channel, float minPulse, float maxPulse, float angleDefault) {
+Servo::Servo(int channel, float minPulse, float maxPulse, float angleDefault) {
     Servo::center();
-    channel = 0;
-    minPulse = 0;
-    maxPulse = 180;
-    angleDefault = 90;
+    this->channel = 0;
+    this->minPulse = 0;
+    this->maxPulse = 180;
+    this->angleDefault = 90;
+    this->currentAngle = angleDefault;
     std::cout << "[SERVO] OK (canal " << channel << ", prescale=" << ")\n";
-
-    if (g_fd >= 0) close(g_fd);
-
-    return 1;
 }
 
-void Servo::setAngle(float angle) const{
+void Servo::setAngle(float angle){
     if (angle < 0.0f)   angle = 0.0f;
     if (angle > 180.0f) angle = 180.0f;
-    currentAngle = Servo::angleToTicks(angle);
+    currentAngle = angle;
     PCA9685::setChannel(channel, angleToTicks(angle));
 }
 
 void Servo::center() {setAngle(angleDefault);}
 
-int  Servo::getAngle() {return g_angle;}
+int  Servo::getAngle() const{return g_angle;}
