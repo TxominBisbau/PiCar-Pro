@@ -1,38 +1,38 @@
 #include "servo.h"
-#include "pca9685.H"
+#include "pca9685.h"
 #include <cmath>
 #include <cstdint>
 #include <iostream>
 
 
-static int g_fd = -1;
-static int g_angle = ANGLE_DEFAULT;
-
 // Conversion angle → ticks PCA9685
-int Servo::angleToTicks(float angle) {
+int Servo::angleToTicks(float angle) const{
     float pulse_us = minPulse + (maxPulse - minPulse) * angle / 180.0f;
     // période = 1/50Hz = 20 000 µs = 4096 ticks
     return (int)(pulse_us * 4096.0f / 20000.0f);
 }
 
-// Interface publique
-bool Servo::init() {
+// Servo de direction
+class Servo::Servo(int channel, float minPulse, float maxPulse, float angleDefault) {
     Servo::center();
-    std::cout << "[SERVO] OK (canal " << SERVO_CHANNEL << ", prescale=" << (int)prescale << ")\n";
-    return true;
-}
+    channel = 0;
+    minPulse = 0;
+    maxPulse = 180;
+    angleDefault = 90;
+    std::cout << "[SERVO] OK (canal " << channel << ", prescale=" << ")\n";
 
-void Servo::cleanup() {
-    Servo::center();
     if (g_fd >= 0) close(g_fd);
+
+    return 1;
 }
 
-void Servo::setAngle(float angle) {
+void Servo::setAngle(float angle) const{
     if (angle < 0.0f)   angle = 0.0f;
     if (angle > 180.0f) angle = 180.0f;
-    setChannel(SERVO_CHANNEL, angleToTicks(angle));
+    currentAngle = Servo::angleToTicks(angle);
+    PCA9685::setChannel(channel, angleToTicks(angle));
 }
 
-void Servo::center() {setAngle(ANGLE_DEFAULT);}
+void Servo::center() {setAngle(angleDefault);}
 
 int  Servo::getAngle() {return g_angle;}
