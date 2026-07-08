@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
         }
 
         // Servo de direction
-        Servo servoDirection(SERVO_CHANNEL_DIRECTION, 500.0f, 2400.0f, 90.0f);
+        Servo servoDirection(CHANNEL_DIRECTION, 500.0f, 2400.0f, 90.0f);
         if (etat.xL >= 24000 && etat.xL <= 40000) {
             servoDirection.center();
         }

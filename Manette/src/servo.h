@@ -4,7 +4,7 @@ const int   SERVO_I2C_BUS     = 1;      // /dev/i2c-1
 const int   SERVO_I2C_ADDR    = 0x40;
 const float SERVO_FREQ        = 50.0f;    // Hz
 
-const int CHANNEL_DIRECTION = 0
+const int CHANNEL_DIRECTION = 0;    // Servo de direction
 
 class Servo {
 public:
