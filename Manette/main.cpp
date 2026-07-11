@@ -29,9 +29,9 @@ int main(int argc, char** argv) {
     }
     int port = std::stoi(argv[1]);
 
-    Servo servoDirection(CHANNEL_DIRECTION, 500.0f, 2400.0f, 90.0f);
-    Servo servoRotation(CHANNEL_ROTATION, 500.0f, 2400.0f, 90.0f);
-    Servo servoIncline(CHANNEL_INCINE, 500.0f, 2400.0f, 90.0f);
+    Servo servoDirection(CHANNEL_DIRECTION, 500.0f, 2500.0f, 90.0f);
+    Servo servoRotation(CHANNEL_ROTATION, 500.0f, 2500.0f, 90.0f);
+    Servo servoIncline(CHANNEL_INCINE, 500.0f, 2500.0f, 90.0f);
     Servo servoPosition(CHANNEL_POSITION, 500.0f, 2400.0f, 90.0f);
     Servo servoOuvert(CHANNEL_OUVERT, 500.0f, 2400.0f, 90.0f);
 
@@ -106,15 +106,15 @@ int main(int argc, char** argv) {
         }
         if (etat.yR > 40000) {
             if (etat.yR >= 64000) {
-                angle_incline = 180;
+                angle_incline = 120;
             }
             else {
-                angle_incline = 90 - (etat.yR+40000)*9/2400;
+                angle_incline = 60 + etat.yR*3/2400;
             }
             servoIncline.setAngle(angle_incline);
         }
         if (etat.yR < 24000) {
-            angle_incline = 90 - etat.yR*6/2400;
+            angle_incline = 90 + (etat.yR-40000)*9/2400;
             servoIncline.setAngle(angle_incline);
         }
 
@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
             angle_position += 1;
         }
         if (etat.btn & BTN_R2) {
-            angle_position += -1;
+            angle_position -= 1;
         }
         servoPosition.setAngle(angle_position);
 
@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
             angle_ouvert += 1;
         }
         if (etat.btn & BTN_L2) {
-            angle_ouvert += -1;
+            angle_ouvert -= 1;
         }
         servoOuvert.setAngle(angle_ouvert);
         
