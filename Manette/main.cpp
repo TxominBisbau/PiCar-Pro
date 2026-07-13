@@ -124,20 +124,24 @@ int main(int argc, char** argv) {
         }
 
         // Servo de position de la pince
-        if (etat.btn & BTN_R1 & BTN_R1 != Prec_R1) {
-            angle_position += 5;
+        bool R1_appuye = (etat.btn & BTN_R1) != 0;
+        bool R2_appuye = (etat.btn & BTN_R2) != 0;
+        if (R1_appuye && !Prec_R1) {
+            angle_position += 10;
         }
-        if (etat.btn & BTN_R2 & BTN_R2 != Prec_R2) {
-            angle_position -= 5;
+        if (R2_appuye && !Prec_R2) {
+            angle_position -= 10;
         }
         servoPosition.setAngle(angle_position);
 
         // Servo d'ouverture de la pince
-        if (etat.btn & BTN_L1 & BTN_L1 != Prec_L1) {
-            angle_ouvert += 5;
+        bool L1_appuye = (etat.btn & BTN_L1) != 0;
+        bool L2_appuye = (etat.btn & BTN_L2) != 0;
+        if (L1_appuye && !Prec_L1) {
+            angle_ouvert += 10;
         }
-        if (etat.btn & BTN_L2 & BTN_L2 != Prec_L2) {
-            angle_ouvert -= 5;
+        if (L2_appuye && !Prec_L2) {
+            angle_ouvert -= 10;
         }
         servoOuvert.setAngle(angle_ouvert);
         
@@ -145,10 +149,10 @@ int main(int argc, char** argv) {
         if (etat.btn & BTN_SELECT) running = false;
 
         // MAJ états précedents
-        Prec_R1 = BTN_R1;
-        Prec_R2 = BTN_R2;
-        Prec_L1 = BTN_L1;
-        Prec_L2 = BTN_L2;
+        Prec_R1 = R1_appuye;
+        Prec_R2 = R2_appuye;
+        Prec_L1 = L1_appuye;
+        Prec_L2 = L2_appuye;
     }
 
     Motors::stop();
