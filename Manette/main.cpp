@@ -120,19 +120,19 @@ int main(int argc, char** argv) {
 
         // Servo de position de la pince
         if (etat.btn & BTN_R1) {
-            angle_position += 1;
+            angle_position += 5;
         }
         if (etat.btn & BTN_R2) {
-            angle_position -= 1;
+            angle_position -= 5;
         }
         servoPosition.setAngle(angle_position);
 
         // Servo d'ouverture de la pince
         if (etat.btn & BTN_L1) {
-            angle_ouvert += 1;
+            angle_ouvert += 5;
         }
         if (etat.btn & BTN_L2) {
-            angle_ouvert -= 1;
+            angle_ouvert -= 5;
         }
         servoOuvert.setAngle(angle_ouvert);
         
