@@ -29,6 +29,11 @@ int main(int argc, char** argv) {
     }
     int port = std::stoi(argv[1]);
 
+    bool Prec_R1;
+    bool Prec_R2;
+    bool Prec_L1;
+    bool Prec_L2;
+
     Servo servoDirection(CHANNEL_DIRECTION, 500.0f, 2500.0f, 90.0f);
     Servo servoRotation(CHANNEL_ROTATION, 500.0f, 2500.0f, 90.0f);
     Servo servoIncline(CHANNEL_INCINE, 500.0f, 2500.0f, 90.0f);
@@ -119,25 +124,31 @@ int main(int argc, char** argv) {
         }
 
         // Servo de position de la pince
-        if (etat.btn & BTN_R1) {
+        if (etat.btn & BTN_R1 & !Prec_R1) {
             angle_position += 5;
         }
-        if (etat.btn & BTN_R2) {
+        if (etat.btn & BTN_R2 & !Prec_R2) {
             angle_position -= 5;
         }
         servoPosition.setAngle(angle_position);
 
         // Servo d'ouverture de la pince
-        if (etat.btn & BTN_L1) {
+        if (etat.btn & BTN_L1 & !Prec_L1) {
             angle_ouvert += 5;
         }
-        if (etat.btn & BTN_L2) {
+        if (etat.btn & BTN_L2 & !Prec_L2) {
             angle_ouvert -= 5;
         }
         servoOuvert.setAngle(angle_ouvert);
         
 
         if (etat.btn & BTN_SELECT) running = false;
+
+        // MAJ états précedents
+        Prec_R1 = BTN_R1;
+        Prec_R2 = BTN_R2;
+        Prec_L1 = BTN_L1;
+        Prec_L2 = BTN_L2;
     }
 
     Motors::stop();
