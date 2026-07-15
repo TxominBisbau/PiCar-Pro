@@ -1,24 +1,28 @@
 #include "led.h"
-#include "pca9685.h"
-#include <cmath>
-#include <cstdint>
+#include <lgpio.h>
 #include <iostream>
 
-// Conversion angle → ticks PCA9685
-int Led::angleToTicks(bool state) const{
-    float pulse_us = 4095*state;
-    return (int)(pulse_us);
-}
+static int g_chip = -1; 
 
-Led::Led(int channel, bool stateDefault) {
-    this->channel = channel;
-    this->stateDefault = stateDefault;
+Led::Led(int pin, bool stateDefault) {
+    this->pin = pin;
     this->currentState = stateDefault;
+
+    if (g_chip < 0) {
+        g_chip = lgGpiochipOpen(0);
+        if (g_chip < 0) {
+            std::cerr << "[LED] Erreur ouverture gpiochip0\n";
+        }
+    }
+
+    lgGpioClaimOutput(g_chip, 0, pin, 0);
+    setState(stateDefault);
+    std::cout << "[LED] OK (pin " << pin << ")\n";
 }
 
 void Led::setState(bool state){
     currentState = state;
-    PCA9685::setChannel(channel, angleToTicks(state));
+    lgGpioWrite(g_chip, pin, state ? 1 : 0);
 }
 
 int Led::getState() const {return currentState;}

@@ -16,7 +16,8 @@ void signalHandler(int) { running = false; }
 int main(int argc, char** argv) {
     std::cout << "=== PiCar Pro — Contrôle manette ===\n";
     std::cout << "  Stick gauche : Avancer & Tourner\n";
-    std::cout << "  Stick droit : Orientation caméra/pince"
+    std::cout << "  Stick droit : Orientation caméra/pince\n";
+    std::cout << "  Boutons droit : LED\n";
     std::cout << "  START : Stop/Start \n\n";
 
     std::signal(SIGINT,  signalHandler);
@@ -36,9 +37,9 @@ int main(int argc, char** argv) {
     Servo servoIncline(CHANNEL_INCINE, 500.0f, 2500.0f, 90.0f);
     Servo servoPosition(CHANNEL_POSITION, 500.0f, 2400.0f, 90.0f);
     Servo servoOuvert(CHANNEL_OUVERT, 500.0f, 2400.0f, 90.0f);
-    Led Top(CHANNEL_TOP, 0);
-    Led Left(CHANNEL_LEFT, 0);
-    Led Right(CHANNEL_RIGHT, 0);
+    Led ledTop(PIN_LED_TOP, false);
+    Led ledLeft(PIN_LED_LEFT, false);
+    Led ledRight(PIN_LED_RIGHT, false);
 
     if (!Manette::init(port)) return EXIT_FAILURE;
 
@@ -50,9 +51,9 @@ int main(int argc, char** argv) {
         int angle_incline = servoIncline.getAngle();
         int angle_position = servoPosition.getAngle();
         int angle_ouvert = servoOuvert.getAngle();
-        int led_top = Top.getState();
-        int led_left = Left.getState();
-        int led_right = Right.getState();
+        int led_top = ledTop.getState();
+        int led_left = ledLeft.getState();
+        int led_right = ledRight.getState();
 
         // Moteurs
         if (etat.btn & BTN_START || (etat.yL >= 24000 && etat.yL <= 40000)) {
@@ -146,22 +147,19 @@ int main(int argc, char** argv) {
 
         // Led haut
         if (etat.btn & BTN_TRIANGLE) {
-            if (led_top == 0)   led_top = 1;
-            else    led_top = 0
+            led_top = !led_top;
         }
         Top.setState(led_top);
 
         // Led gauche
         if (etat.btn & BTN_CARRE) {
-            if (led_left == 0)   led_left = 1;
-            else    led_left = 0
+            led_left = !led_left;
         }
         Left.setState(led_left);
 
         // Led droite
         if (etat.btn & BTN_ROND) {
-            if (led_right == 0)   led_right = 1;
-            else    led_right = 0
+            led_right = !led_right;
         }
         Right.setState(led_right);
         
