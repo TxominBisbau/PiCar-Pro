@@ -18,7 +18,7 @@ Led::Led(int channel, bool stateDefault) {
 
 void Led::setState(bool state){
     currentState = state;
-    PCA9685::setChannel(channel, state);
+    PCA9685::setChannel(channel, angleToTicks(state));
 }
 
 int Led::getState() const {return currentState;}

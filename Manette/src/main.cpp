@@ -143,8 +143,29 @@ int main(int argc, char** argv) {
             angle_ouvert -= 5;
         }
         servoOuvert.setAngle(angle_ouvert);
-        
 
+        // Led haut
+        if (etat.btn & BTN_TRIANGLE) {
+            if (led_top == 0)   led_top = 1;
+            else    led_top = 0
+        }
+        Top.setState(led_top);
+
+        // Led gauche
+        if (etat.btn & BTN_CARRE) {
+            if (led_left == 0)   led_left = 1;
+            else    led_left = 0
+        }
+        Left.setState(led_left);
+
+        // Led droite
+        if (etat.btn & BTN_ROND) {
+            if (led_right == 0)   led_right = 1;
+            else    led_right = 0
+        }
+        Right.setState(led_right);
+        
+        // Running OFF
         if (etat.btn & BTN_SELECT) running = false;
     }
 
