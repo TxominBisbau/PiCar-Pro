@@ -1,4 +1,4 @@
-// Compilation : g++ main.cpp src/motors.cpp src/pca9685.cpp src/servo.cpp src/manette.cpp -o picarpro -std=c++17 -llgpio
+// Compilation : g++ main.cpp src/motors.cpp src/pca9685.cpp src/servo.cpp src/led.cpp src/manette.cpp -o picarpro -std=c++17 -llgpio
 //               sudo ./picarpro 5005
 
 #include <iostream>
