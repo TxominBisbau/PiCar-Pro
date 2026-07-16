@@ -1,4 +1,4 @@
-// Compilation : g++ main.cpp src/motors.cpp src/pca9685.cpp src/servo.cpp src/manette.cpp -o picarpro -std=c++17 -llgpio
+// Compilation : g++ main.cpp src/motors.cpp src/pca9685.cpp src/servo.cpp src/led.cpp src/manette.cpp -o picarpro -std=c++17 -llgpio
 //               sudo ./picarpro 5005
 
 #include <iostream>
@@ -8,6 +8,7 @@
 #include "src/manette.h"
 #include "src/pca9685.h"
 #include "src/servo.h"
+#include "src/led.h"
 
 std::atomic<bool> running(true);
 void signalHandler(int) { running = false; }
@@ -15,6 +16,8 @@ void signalHandler(int) { running = false; }
 int main(int argc, char** argv) {
     std::cout << "=== PiCar Pro — Contrôle manette ===\n";
     std::cout << "  Stick gauche : Avancer & Tourner\n";
+    std::cout << "  Stick droit : Orientation caméra/pince\n";
+    std::cout << "  Boutons droit : LEDs\n";
     std::cout << "  START : Stop/Start \n\n";
 
     std::signal(SIGINT,  signalHandler);
@@ -34,6 +37,9 @@ int main(int argc, char** argv) {
     Servo servoIncline(CHANNEL_INCINE, 500.0f, 2500.0f, 90.0f);
     Servo servoPosition(CHANNEL_POSITION, 500.0f, 2400.0f, 90.0f);
     Servo servoOuvert(CHANNEL_OUVERT, 500.0f, 2400.0f, 90.0f);
+    Led ledTop(PIN_LED_TOP, false);
+    Led ledLeft(PIN_LED_LEFT, false);
+    Led ledRight(PIN_LED_RIGHT, false);
 
     if (!Manette::init(port)) return EXIT_FAILURE;
 
@@ -45,6 +51,9 @@ int main(int argc, char** argv) {
         int angle_incline = servoIncline.getAngle();
         int angle_position = servoPosition.getAngle();
         int angle_ouvert = servoOuvert.getAngle();
+        int led_top = ledTop.getState();
+        int led_left = ledLeft.getState();
+        int led_right = ledRight.getState();
 
         // Moteurs
         if (etat.btn & BTN_START || (etat.yL >= 24000 && etat.yL <= 40000)) {
@@ -106,15 +115,15 @@ int main(int argc, char** argv) {
         }
         if (etat.yR > 40000) {
             if (etat.yR >= 64000) {
-                angle_incline = 180;
+                angle_incline = 120;
             }
             else {
-                angle_incline = 60 + etat.yR*12/2400;
+                angle_incline = 60 + etat.yR*3/2400;
             }
             servoIncline.setAngle(angle_incline);
         }
         if (etat.yR < 24000) {
-            angle_incline = 90 + (etat.yR-40000)*1/2400;
+            angle_incline = 90 + (etat.yR-40000)*9/2400;
             servoIncline.setAngle(angle_incline);
         }
 
@@ -136,6 +145,25 @@ int main(int argc, char** argv) {
         }
         servoOuvert.setAngle(angle_ouvert);
 
+        // Led haut
+        if (etat.btn & BTN_TRIANGLE) {
+            led_top = !led_top;
+        }
+        ledTop.setState(led_top);
+
+        // Led gauche
+        if (etat.btn & BTN_CARRE) {
+            led_left = !led_left;
+        }
+        ledLeft.setState(led_left);
+
+        // Led droite
+        if (etat.btn & BTN_ROND) {
+            led_right = !led_right;
+        }
+        ledRight.setState(led_right);
+        
+        // Running OFF
         if (etat.btn & BTN_SELECT) running = false;
     }
 
