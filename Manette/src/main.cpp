@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     std::cout << "=== PiCar Pro — Contrôle manette ===\n";
     std::cout << "  Stick gauche : Avancer & Tourner\n";
     std::cout << "  Stick droit : Orientation caméra/pince\n";
-    std::cout << "  Boutons droit : LED\n";
+    std::cout << "  Boutons droit : LEDs\n";
     std::cout << "  START : Stop/Start \n\n";
 
     std::signal(SIGINT,  signalHandler);

@@ -37,7 +37,7 @@ bool Motors::init() {
         lgGpioClaimOutput(g_chip, 0, pin, 0);
 
     Motors::stop();
-    std::cout << "[MOTORS] OK (vitesse " << g_speed << "%)\n";
+    std::cout << "[MOTORS] OK\n";
     return true;
 }
 
